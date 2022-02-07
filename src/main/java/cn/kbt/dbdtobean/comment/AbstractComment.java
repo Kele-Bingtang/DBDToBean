@@ -1,10 +1,10 @@
 package cn.kbt.dbdtobean.comment;
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/20 17:33
- * @Version 1.0
- * @Describe 抽象注释类
+ * @author Kele-Bing
+ * @version 1.0
+ * @since 2021/9/20 17:33
+ * 抽象注释类
  */
 public abstract class AbstractComment {
 
@@ -14,10 +14,14 @@ public abstract class AbstractComment {
      * /* 代表在上方生成 /**  *'/'注释
      */
     private String commentType = "//";
-    
+
     /**
      * 给类的内容注释
      * 解析注释类型，生成不同类型的注释
+     *
+     * @param sb      字符串
+     * @param comment 注释
+     * @return 字符串
      */
     protected StringBuilder parseCommentType(StringBuilder sb, String comment) {
         if (commentType.equals("//")) {
@@ -34,6 +38,8 @@ public abstract class AbstractComment {
 
     /**
      * 设置注释的类型
+     *
+     * @param commentType 注释的类型
      */
     public void setCommentType(String commentType) {
         if (!commentType.equals("//") && !commentType.equals("/*") && !commentType.equals("/**")) {
@@ -44,8 +50,13 @@ public abstract class AbstractComment {
     }
 
     /**
-     * 给类注释
-     * 使用解析注释类型，生成不同类型的注释
+     * 给类的内容注释
+     * 解析注释类型，生成不同类型的注释
+     *
+     * @param sb          字符串
+     * @param comment     注释
+     * @param commentType 注释的类型
+     * @return 字符串
      */
     protected StringBuilder parseCommentType(StringBuilder sb, String comment, String commentType) {
         if (commentType.equals("//")) {
@@ -59,6 +70,6 @@ public abstract class AbstractComment {
         }
         return sb;
     }
-    
-    
+
+
 }

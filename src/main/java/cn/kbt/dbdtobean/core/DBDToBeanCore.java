@@ -13,9 +13,13 @@ import java.sql.*;
 import java.util.HashMap;
 
 public abstract class DBDToBeanCore implements IDBDToBeanCore {
-    /** 数据库信息 **/
+    /**
+     * 数据库信息
+     **/
     private ResultSetMetaData JDBCData = null;
-    /** 生成的文件名字 **/
+    /**
+     * 生成的文件名字
+     **/
     private String createBeanName;
 
     protected DBDToBeanCore() {
@@ -26,11 +30,18 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
      * 2、是否构造函数
      * 3、是否生成set和get语句
      * 4、是否重写toString方法
+     *
+     * @param tableName     表名
+     * @param isConstructor 是否生成构造器
+     * @param isSetAndGet   是否生成 Set Get 方法
+     * @param isToString    是否生成 ToString 方法
+     * @return 内容
+     * @throws SQLException SQL 异常
      */
     @Override
     public String generateAttrFromTable(String tableName, boolean isConstructor, boolean isSetAndGet, boolean isToString) throws SQLException {
         DBDToBeanProperties dbdToBeanProperties = DBDToBeanContext.getDbdToBeanProperties();
-        if(tableName == null){
+        if (tableName == null) {
             System.out.println("请输入要导出的表名或者数据库名");
             return null;
         }
@@ -45,8 +56,8 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
         // 获取定义的信息
         DBDToBeanDefinition definition = DBDToBeanContext.getDbdToBeanDefinition();
         createBeanName = definition.getCreateBeanName();
-        //是否生成类注释，格式为 @author    @create   @version  @Describe
-        if(DBDToBeanContext.getDefaultComment().isSetHeadComment() && DBDToBeanUtils.isEmpty(definition.getHeadComment().getHeadComments().toString())){
+        //是否生成类注释，格式为 @author    @since   @version  
+        if (DBDToBeanContext.getDefaultComment().isSetHeadComment() && DBDToBeanUtils.isEmpty(definition.getHeadComment().getHeadComments().toString())) {
             definition.getHeadComment().generateHeadComments(dbdToBeanProperties.getAuthorName());
         }
         sb.append(definition.setThenGetPackageName(definition.getPackageName()));
@@ -56,7 +67,7 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
         sb.append(definition.getHeadComment().getHeadComments().toString());
         //判断生成的JavaBean文件名是否为空，为空则以数据库表名为文件名
         if (DBDToBeanUtils.isEmpty(createBeanName)) {
-           DBDToBeanContext.getDbdToBeanDefinitions().add(parseBeanName(definition,tableName));
+            DBDToBeanContext.getDbdToBeanDefinitions().add(parseBeanName(definition, tableName));
         }
         //创建属性值
         createField(sb, getColumnInfo(tableName));
@@ -73,12 +84,16 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
 
     /**
      * 读取数据库，创建属性值
+     *
+     * @param sb          内容
+     * @param columnsInfo 字段信息
+     * @throws SQLException SQL 异常
      */
     private void createField(StringBuilder sb, ResultSet columnsInfo) throws SQLException {
         sb.append("public class ").append(createBeanName).append(" {\n");
         for (int i = 1; i <= JDBCData.getColumnCount(); i++) {
             //添加自定义注释，长度不满足则生成规定的注释
-            DBDToBeanContext.getCustomComment().customFiledComment(sb, columnsInfo, parseFieldName(JDBCData.getColumnName(i)) + " ：",i);
+            DBDToBeanContext.getCustomComment().customFiledComment(sb, columnsInfo, parseFieldName(JDBCData.getColumnName(i)) + " ：", i);
             sb.append("\tprivate ").append(fieldType(JDBCData.getColumnClassName(i)))
                     .append(" ").append(parseFieldName(JDBCData.getColumnName(i))).append(";").append("\n");
         }
@@ -87,6 +102,10 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
 
     /**
      * 读取数据库，创建构造器
+     *
+     * @param sb            内容
+     * @param isConstructor 是否生成构造器
+     * @throws SQLException SQL 异常
      */
     private void createConstructor(StringBuilder sb, boolean isConstructor) throws SQLException {
         if (isConstructor) {
@@ -94,10 +113,10 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
             sb.setLength(sb.length() - 1);
             sb.append("\n");
             // 是否生成无参构造器注释，没有自定义注释则生成规定的注释
-            DBDToBeanContext.getCustomComment().customConstructComment(sb,true);
+            DBDToBeanContext.getCustomComment().customConstructComment(sb, true);
             sb.append("\tpublic ").append(createBeanName).append("() {\n\t}\n\n");
             //是否生成有参构造器注释，没有自定义注释则生成规定的注释
-            DBDToBeanContext.getCustomComment().customConstructComment(sb,false);
+            DBDToBeanContext.getCustomComment().customConstructComment(sb, false);
             sb.append("\tpublic ").append(createBeanName).append("(");
             for (int i = 1; i <= JDBCData.getColumnCount(); i++) {
                 sb.append(fieldType(JDBCData.getColumnClassName(i))).append(" ")
@@ -116,6 +135,11 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
 
     /**
      * 读取数据库，创建set和get方法
+     *
+     * @param sb          内容
+     * @param isSetAndGet 是否生成 set 和 get 方法
+     * @param columnsInfo 字段信息
+     * @throws SQLException SQL 异常
      */
     private void createSetAndGet(StringBuilder sb, boolean isSetAndGet, ResultSet columnsInfo) throws SQLException {
         if (isSetAndGet) {
@@ -126,13 +150,13 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
                 String columnName = JDBCData.getColumnName(i);
                 String columnClassName = JDBCData.getColumnClassName(i);
                 //是否生成get注释，没有自定义注释则生成规定的注释
-                DBDToBeanContext.getCustomComment().customSetGetComment(sb,columnsInfo,parseFieldName(columnName),i,false);
-                String setAndGetContent = DBDToBeanUtils.isTwoCharUpper(parseFieldName(columnName))?parseFieldName(columnName):DBDToBeanUtils.firstCharToUpperCase(parseFieldName(columnName));
+                DBDToBeanContext.getCustomComment().customSetGetComment(sb, columnsInfo, parseFieldName(columnName), i, false);
+                String setAndGetContent = DBDToBeanUtils.isTwoCharUpper(parseFieldName(columnName)) ? parseFieldName(columnName) : DBDToBeanUtils.firstCharToUpperCase(parseFieldName(columnName));
                 sb.append("\tpublic ").append(fieldType(columnClassName)).append(" get")
                         .append(setAndGetContent).append("() {\n\t\t").append("return ")
                         .append(parseFieldName(columnName)).append(";\n\t}\n\n");
                 //是否生成set注释，没有自定义注释则生成规定的注释
-                DBDToBeanContext.getCustomComment().customSetGetComment(sb,columnsInfo,columnName,i,true);
+                DBDToBeanContext.getCustomComment().customSetGetComment(sb, columnsInfo, columnName, i, true);
                 sb.append("\tpublic void set").append(setAndGetContent)
                         .append("(").append(fieldType(columnClassName)).append(" ")
                         .append(parseFieldName(columnName)).append(") {\n\t\t").append("this.")
@@ -146,6 +170,10 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
 
     /**
      * 读取数据库，创建重写toString方法
+     *
+     * @param sb         内容
+     * @param isToString 是否生成 toString 方法
+     * @throws SQLException SQL 异常
      */
     private void createToString(StringBuilder sb, boolean isToString) throws SQLException {
         if (isToString) {
@@ -168,15 +196,23 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
     /**
      * 读取数据库，在指定路径生成JavaBean文件
      * 文件名 由 表名构成
+     *
+     * @param dateBaseName  数据库名
+     * @param isConstructor 是否生成构造器
+     * @param isSetAndGet   是否生成 Set Get 方法
+     * @param isToString    是否生成 ToString 方法
+     * @return 内容
+     * @throws SQLException SQL 异常
+     * @throws IOException  IO 异常
      */
     @Override
-    public HashMap<String,String> generateAttrFromDataBase(String dateBaseName, boolean isConstructor, boolean isSetAndGet, boolean isToString) throws SQLException, IOException {
+    public HashMap<String, String> generateAttrFromDataBase(String dateBaseName, boolean isConstructor, boolean isSetAndGet, boolean isToString) throws SQLException, IOException {
         String dateBaseType = DBDToBeanContext.getDbdToBeanDefinition().getDateBaseType();
         //获取不同数据库的不同的查询多表的sql语句
         PreparedStatement stmt = getConnection().prepareStatement(parseDateBaseTypeAndGetSQL(dateBaseName));
         ResultSet rs = stmt.executeQuery();
         //存储整个数据库的生成的bean文件内容
-        HashMap<String,String> fileContentMap = new HashMap<>();
+        HashMap<String, String> fileContentMap = new HashMap<>();
         while (rs.next()) {
             String tableName;
             //文件名首字母是否大写
@@ -198,6 +234,12 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
 
     /**
      * 将数据导出为java文件
+     *
+     * @param fileContent 内容
+     * @param path        路径
+     * @param dirName     文件夹名
+     * @return 内容
+     * @throws IOException IO 异常
      */
     @Override
     public String exportToFile(String fileContent, String path, String dirName) throws IOException {
@@ -236,28 +278,42 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
         }
         return path + "\\" + dirName;
     }
+
     /**
      * 将数据导出为java文件
+     *
+     * @param createBeanName 文件名
+     * @param fileContent    内容
+     * @param path           路径
+     * @param dirName        文件夹名
+     * @return 内容
+     * @throws IOException IO 异常
      */
-    protected String exportToFiles(String createBeanName,String fileContent, String path, String dirName) throws IOException {
+    protected String exportToFiles(String createBeanName, String fileContent, String path, String dirName) throws IOException {
         this.createBeanName = createBeanName;
         return exportToFile(fileContent, path, dirName);
     }
+
     /**
      * 获取生成路径
+     *
+     * @return 文件路径
      */
-    protected File beanLocation(){
+    protected File beanLocation() {
         DBDToMVCDefinition dbdToMVCDefinition = DBDToBeanContext.getDbdToMVCDefinition();
         // 默认生成路径：桌面
-        if(DBDToBeanUtils.isNotEmpty(dbdToMVCDefinition.getEntityLocation())){
+        if (DBDToBeanUtils.isNotEmpty(dbdToMVCDefinition.getEntityLocation())) {
             return new File(System.getProperty("user.dir") + "\\" + dbdToMVCDefinition.getModulesName() + "\\" + dbdToMVCDefinition.getMavenOrSimple() + DBDToBeanUtils.packageToPath(dbdToMVCDefinition.getEntityLocation()));
-        }else {
+        } else {
             return FileSystemView.getFileSystemView().getHomeDirectory();
         }
     }
 
     /**
      * 将数据库的对应Java的类型截取出来(去掉包名)
+     *
+     * @param dataType 数据库类型
+     * @return 数据库类型
      */
     private String fieldType(String dataType) {
         int index = dataType.lastIndexOf(".");
@@ -267,6 +323,10 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
     /**
      * 获取表名
      * 获取数据库的表的全部列信息
+     *
+     * @param tableName 表名
+     * @return 结果集
+     * @throws SQLException SQL 异常
      */
     private ResultSet getColumnInfo(String tableName) throws SQLException {
         DatabaseMetaData metaData = getConnection().getMetaData();
@@ -281,6 +341,10 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
 
     /**
      * 添加导入的jar包语句
+     *
+     * @param sb 内容
+     * @return 内容
+     * @throws SQLException SQL 异常
      */
     private StringBuilder addJarPackage(StringBuilder sb) throws SQLException {
         if (DBDToBeanContext.getDbdToBeanDefinition().isJarPackage()) {
@@ -294,10 +358,15 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
         sb.append("\n");
         return sb;
     }
+
     /**
      * 解析生成的文件名字，判断是否首字母大写
+     *
+     * @param definition bean 信息
+     * @param tableName  表名
+     * @return 内容
      */
-    private DBDToBeanDefinition parseBeanName(DBDToBeanDefinition definition,String tableName){
+    private DBDToBeanDefinition parseBeanName(DBDToBeanDefinition definition, String tableName) {
         //文件名首字母大写或者小写，如果Oracle表，先转小写，再将首字母大写
         if (definition.isBeanFirstNameUp()) {
             definition.setCreateBeanName(DBDToBeanUtils.firstCharToUpperCase(tableName.toLowerCase()));
@@ -310,12 +379,18 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
         dbdToBeanDefinition.setCreateBeanName(definition.getCreateBeanName());
         return dbdToBeanDefinition;
     }
+
     /**
      * 解析数据库，获取数据库类型以及查询表的sql语句
+     *
+     * @param dateBaseName 数据库名
+     * @return SQL 语句
+     * @throws SQLException SQL 异常
      */
     protected String parseDateBaseTypeAndGetSQL(String dateBaseName) throws SQLException {
         DBDToBeanProperties dbdToBeanProperties = DBDToBeanContext.getDbdToBeanProperties();
-        String sql = "select table_name from information_schema.tables where table_schema = '" + dateBaseName + "'";;
+        String sql = "select table_name from information_schema.tables where table_schema = '" + dateBaseName + "'";
+        ;
         //不用数据库的查询全部表的sql语句
         if (dbdToBeanProperties.getConn().getMetaData().getDatabaseProductName().equals("MySQL")) {
             sql = "select table_name from information_schema.tables where table_schema = '" + dateBaseName + "'";
@@ -335,21 +410,27 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
     /**
      * 判断大小写
      * 返回不同的参数
+     *
+     * @param content 内容
+     * @return 内容
      */
     private String parseFieldName(String content) {
         DBDToBeanDefinition definition = DBDToBeanContext.getDbdToBeanDefinition();
         if (definition.isFieldNameAllLower() && definition.is_ToUpper()) {
             return DBDToBeanUtils._CharToUpperCase(content.toLowerCase());
-        }else if ((definition.isFieldNameAllLower())) {
+        } else if ((definition.isFieldNameAllLower())) {
             return content.toLowerCase();
-        }else if(definition.is_ToUpper()) {
+        } else if (definition.is_ToUpper()) {
             return DBDToBeanUtils._CharToUpperCase(content);
-        }else {
+        } else {
             return content;
         }
     }
+
     /**
      * 获取数据库源对象
+     *
+     * @return 数据库对象
      */
     public Connection getConnection() {
         return DBDToBeanContext.getDbdToBeanProperties().getConn();

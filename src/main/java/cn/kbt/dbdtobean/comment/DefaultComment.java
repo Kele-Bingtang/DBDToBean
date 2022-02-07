@@ -2,23 +2,35 @@ package cn.kbt.dbdtobean.comment;
 
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/19 15:10
- * @Version 1.0
- * @Describe 默认注释类
+ * @author Kele-Bing
+ * @version 1.0
+ * 默认注释类
+ * @since 2021/9/19 15:10
  */
 public class DefaultComment {
-    /** 是否生成全部注释 **/
+    /**
+     * 是否生成全部注释
+     **/
     private boolean allComments = false;
-    /** 是否生成类注释 **/
+    /**
+     * 是否生成类注释
+     **/
     private boolean setHeadComment = true;
-    /** 是否生成属性注释 **/
+    /**
+     * 是否生成属性注释
+     **/
     private boolean fieldComment = false;
-    /** 是否生成构造器注释 **/
+    /**
+     * 是否生成构造器注释
+     **/
     private boolean constructorComment = false;
-    /** 是否生成setter和getter注释 **/
+    /**
+     * 是否生成setter和getter注释
+     **/
     private boolean setAndGetComment = false;
-    /** 是否生成toString注释 **/
+    /**
+     * 是否生成toString注释
+     **/
     private boolean toStringComment = false;
 
     public boolean isAllComments() {
@@ -30,7 +42,7 @@ public class DefaultComment {
         this.setHeadComment = allComments;
         this.fieldComment = allComments;
         this.constructorComment = allComments;
-        this. setAndGetComment = allComments;
+        this.setAndGetComment = allComments;
         this.toStringComment = allComments;
     }
 
@@ -74,10 +86,10 @@ public class DefaultComment {
         this.toStringComment = toStringComment;
     }
 
-    public boolean generateComment(){
+    public boolean generateComment() {
         return fieldComment || constructorComment || setAndGetComment || toStringComment;
     }
-    
+
     public void setComment(boolean isFieldComment, boolean isConstructorComment, boolean isSetAndGetComment, boolean isToStringComment) {
         this.setFieldComment(isFieldComment);
         this.setConstructorComment(isConstructorComment);

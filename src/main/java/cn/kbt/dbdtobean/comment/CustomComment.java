@@ -8,13 +8,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/19 15:01
- * @Version 1.0
- * @Describe 自定义注释类
+ * @author Kele-Bing
+ * @version 1.0
+ * @since 2021/9/19 15:01
+ * 自定义注释类
  */
-public class CustomComment extends AbstractComment{
-    
+public class CustomComment extends AbstractComment {
+
     private final static String NULL_CONSTRUCTOR = "无参构造器";
     private final static String PARAM_CONSTRUCTOR = "有参构造器，进行属性值的初始化";
     private final static String SET = "设置 ";
@@ -34,7 +34,7 @@ public class CustomComment extends AbstractComment{
 
     public CustomComment() {
     }
-    
+
     public List<String> getFiledComment() {
         return filedComment;
     }
@@ -58,7 +58,7 @@ public class CustomComment extends AbstractComment{
     public void setParamConstructorComment(String paramConstructorComment) {
         this.paramConstructorComment = paramConstructorComment;
     }
-   
+
 
     public String getToStringComment() {
         return toStringComment;
@@ -74,8 +74,8 @@ public class CustomComment extends AbstractComment{
 
     public void setSetComment(List<String> setComment) {
         SetComment = setComment;
-    } 
-    
+    }
+
 
     public List<String> getGetComment() {
         return GetComment;
@@ -85,15 +85,16 @@ public class CustomComment extends AbstractComment{
         GetComment = getComment;
     }
 
-    public void setConstructorComment(String nullConstructorComment,String constructorComment) {
+    public void setConstructorComment(String nullConstructorComment, String constructorComment) {
         this.nullConstructorComment = nullConstructorComment;
         this.paramConstructorComment = constructorComment;
     }
-    
-    public void setSetAndGetComment(List<String> getComment,List<String> setComment) {
+
+    public void setSetAndGetComment(List<String> getComment, List<String> setComment) {
         this.GetComment = getComment;
         SetComment = setComment;
     }
+
     /*
         自定义属性注释
     */
@@ -123,12 +124,13 @@ public class CustomComment extends AbstractComment{
         }
         return sb;
     }
+
     /*
          自定义构造器注释
      */
-    public StringBuilder customConstructComment(StringBuilder sb,boolean nullConstruct){
+    public StringBuilder customConstructComment(StringBuilder sb, boolean nullConstruct) {
         CustomComment customComment = DBDToBeanContext.getCustomComment();
-        if(nullConstruct){
+        if (nullConstruct) {
             //是否生成无参构造器注释，没有自定义注释则生成规定的注释
             if (DBDToBeanContext.getDefaultComment().isConstructorComment()) {
                 if (DBDToBeanUtils.isNotEmpty(customComment.getNullConstructorComment())) {
@@ -137,7 +139,7 @@ public class CustomComment extends AbstractComment{
                     super.parseCommentType(sb, NULL_CONSTRUCTOR);
                 }
             }
-        }else{
+        } else {
             //是否生成有参构造器注释，没有自定义注释则生成规定的注释
             if (DBDToBeanContext.getDefaultComment().isConstructorComment()) {
                 if (DBDToBeanUtils.isNotEmpty(customComment.getParamConstructorComment())) {
@@ -149,14 +151,15 @@ public class CustomComment extends AbstractComment{
         }
         return sb;
     }
+
     /*
         自定义setter和getter注释
     */
-    public StringBuilder customSetGetComment(StringBuilder sb,ResultSet columns,String content,int i,boolean set) throws SQLException {
+    public StringBuilder customSetGetComment(StringBuilder sb, ResultSet columns, String content, int i, boolean set) throws SQLException {
         CustomComment customComment = DBDToBeanContext.getCustomComment();
         //是否生成set注释，没有自定义注释则生成规定的注释
         if (DBDToBeanUtils.isNotEmpty(customComment.getGetComment()) && customComment.getGetComment().size() >= i) {
-            if(set){
+            if (set) {
                 if (DBDToBeanUtils.isNotEmpty(columns)) {
                     columns.next();
                 }
@@ -164,20 +167,21 @@ public class CustomComment extends AbstractComment{
             super.parseCommentType(sb, customComment.getGetComment().get(i - 1));
         } else {
             //是否生成get注释，没有自定义注释则生成规定的注释
-            generateSetGetComment(sb, columns, set,content);
+            generateSetGetComment(sb, columns, set, content);
         }
         return sb;
     }
+
     /*
         生成setter和getter注释
     */
-    private void generateSetGetComment(StringBuilder sb,ResultSet columns,boolean set,String fieldName) throws SQLException {
+    private void generateSetGetComment(StringBuilder sb, ResultSet columns, boolean set, String fieldName) throws SQLException {
         String setGetString = GET;
         if (DBDToBeanContext.getDefaultComment().isSetAndGetComment()) {
             if (DBDToBeanUtils.isNotEmpty(columns)) {
-                if(!set){
+                if (!set) {
                     columns.next();
-                }else {
+                } else {
                     setGetString = SET;
                 }
                 if (DBDToBeanUtils.isNotEmpty(columns.getString(REMARKS))) {
@@ -190,6 +194,7 @@ public class CustomComment extends AbstractComment{
             }
         }
     }
+
     /*
          自定义toString注释
     */
@@ -203,5 +208,5 @@ public class CustomComment extends AbstractComment{
         }
         return sb;
     }
-    
+
 }

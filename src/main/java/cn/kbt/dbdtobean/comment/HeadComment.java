@@ -4,16 +4,16 @@ import cn.kbt.dbdtobean.utils.DBDToBeanUtils;
 
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/20 17:27
- * @Version 1.0
- * @Describe 类注释信息
+ * @author Kele-Bing
+ * @version 1.0
+ * @since 2021/9/20 17:27
+ * 类注释信息
  */
-public class HeadComment extends AbstractComment{
-    private String author = "@Author ";
-    private String createTime = "@Create ";
-    private String version = "@Version 1.0";
-    private String describe = "@Describe ";
+public class HeadComment extends AbstractComment {
+    private String author = "@author ";
+    private String createTime = "@since ";
+    private String version = "@version 1.0";
+    private String describe = " ";
     private StringBuilder headComments = null;
 
     public String getAuthor() {
@@ -49,7 +49,7 @@ public class HeadComment extends AbstractComment{
     }
 
     public StringBuilder getHeadComments() {
-        if(headComments == null){
+        if (headComments == null) {
             headComments = new StringBuilder();
         }
         return headComments;
@@ -72,6 +72,7 @@ public class HeadComment extends AbstractComment{
         //缓存区添加自定义的类注释
         super.parseCommentType(headComments, headComment, "/*");
     }
+
     /**
      * 自定义的类注释和设置注释的类型
      *
@@ -81,8 +82,8 @@ public class HeadComment extends AbstractComment{
     public void setHeadComment(String headComment, String commentType) {
         super.parseCommentType(headComments, headComment, commentType);
     }
-    
-    public StringBuilder generateHeadComments(String author){
+
+    public StringBuilder generateHeadComments(String author) {
         this.headComments.setLength(0);
         this.headComments.append("/**\n * ")
                 .append(this.author).append(author)
@@ -92,5 +93,5 @@ public class HeadComment extends AbstractComment{
                 .append("\n */\n");
         return headComments;
     }
-    
+
 }

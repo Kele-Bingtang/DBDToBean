@@ -3,63 +3,114 @@ package cn.kbt.dbdtobean.mvcbean;
 import cn.kbt.dbdtobean.core.DBDToBeanContext;
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/22 19:15
- * @Version 1.0
- * @Describe
+ * @author Kele-Bing
+ * @version 1.0
+ * @since 2021/9/22 19:15
  */
 public class DBDToMVCDefinition {
-    /** Controller位置 **/
+    /**
+     * Controller位置
+     **/
     private String controllerLocation = null;
-    /** Service位置 **/
+    /**
+     * Service位置
+     **/
     private String serviceLocation = null;
-    /** Dao位置 **/
+    /**
+     * Dao位置
+     **/
     private String daoLocation = null;
-    /** Mapper位置 **/
+    /**
+     * Mapper位置
+     **/
     private String mapperLocation = null;
-    /** Mapper的xml位置 **/
+    /**
+     * Mapper的xml位置
+     **/
     private String mapperXmlLocation = "mapper";
-    /** 所有文件前缀 **/
+    /**
+     * 所有文件前缀
+     **/
     private String prefix = "";
-    /** 所有文件后缀 **/
+    /**
+     * 所有文件后缀
+     **/
     private String suffix = "";
-    /** Controller文件前缀 **/
+    /**
+     * Controller文件前缀
+     **/
     private String controllerPre = "";
-    /** Controller文件后缀 **/
+    /**
+     * Controller文件后缀
+     **/
     private String controllerSuf = "Controller";
-    /** Service接口文件前缀 **/
+    /**
+     * Service接口文件前缀
+     **/
     private String serviceInterPre = "";
-    /** Service接口文件后缀 **/
+    /**
+     * Service接口文件后缀
+     **/
     private String serviceInterSuf = "Service";
-    /** Service实现文件前缀 **/
+    /**
+     * Service实现文件前缀
+     **/
     private String serviceImplPre = "";
-    /** Service实现文件后缀 **/
+    /**
+     * Service实现文件后缀
+     **/
     private String serviceImplSuf = "ServiceImpl";
-    /** Dao接口文件前缀 **/
+    /**
+     * Dao接口文件前缀
+     **/
     private String daoInterPre = "";
-    /**  Dao接口文件后缀 **/
+    /**
+     * Dao接口文件后缀
+     **/
     private String daoInterSuf = "Dao";
-    /** Dao实现文件前缀 **/
+    /**
+     * Dao实现文件前缀
+     **/
     private String daoImplPre = "";
-    /** Dao实现文件后缀 **/
+    /**
+     * Dao实现文件后缀
+     **/
     private String daoImplSuf = "DaoImpl";
-    /** Mapper接口文件前缀 **/
+    /**
+     * Mapper接口文件前缀
+     **/
     private String mapperInterPre = "";
-    /** Mapper接口文件后缀 **/
+    /**
+     * Mapper接口文件后缀
+     **/
     private String mapperInterSuf = "Mapper";
-    /** Mapper的xml文件前缀 **/
+    /**
+     * Mapper的xml文件前缀
+     **/
     private String mapperXmlPre = "";
-    /** Mapper的xml文件后缀 **/
+    /**
+     * Mapper的xml文件后缀
+     **/
     private String mapperXmlSuf = "Mapper";
-    /** 实体类路径 **/
+    /**
+     * 实体类路径
+     **/
     private String entityLocation = null;
-    /** 所在模块名 **/
+    /**
+     * 所在模块名
+     **/
     private String modulesName = null;
-    /** 是否生成CURD **/
+    /**
+     * 是否生成CURD
+     **/
     private boolean generatecurd = false;
-    /** maven目录或普通目录 **/
+    /**
+     * maven目录或普通目录
+     **/
     private boolean mavenOrSimple = true;
-    /** 是否生成MVC注解 **/
+    /**
+     * 是否生成MVC注解
+     **/
     private boolean mvcAnnotation = true;
 
     public String getControllerLocation() {
@@ -231,7 +282,7 @@ public class DBDToMVCDefinition {
     }
 
     public String getEntityLocation() {
-        if(entityLocation == null){
+        if (entityLocation == null) {
             return "";
         }
         return entityLocation;
@@ -242,7 +293,7 @@ public class DBDToMVCDefinition {
     }
 
     public String getModulesName() {
-        if(modulesName == null){
+        if (modulesName == null) {
             return "";
         }
         return modulesName;
@@ -278,22 +329,24 @@ public class DBDToMVCDefinition {
 
     /**
      * 获取Maven或者普通目录
+     * @return Maven 结构还是普通 Java 结构
      */
     public String getMavenOrSimple() {
-        if(mavenOrSimple){
+        if (mavenOrSimple) {
             return AbstractDBDToMVC.MAVEN_HONE;
-        }else {
+        } else {
             return AbstractDBDToMVC.SIMPLE_HONE;
         }
     }
 
     /**
      * 获取Mapper的xml路径
+     * @return Mapper 的 XML 路径
      */
     public String getMapperPath() {
-        if(mavenOrSimple){
+        if (mavenOrSimple) {
             return DBDToMapper.MAVEN_MAPPER_XML_HONE;
-        }else {
+        } else {
             DBDToMVCDefinition dbdToMVCDefinition = DBDToBeanContext.getDbdToMVCDefinition();
             dbdToMVCDefinition.setMapperXmlLocation(dbdToMVCDefinition.getMapperLocation());
             return DBDToMapper.SIMPLE_MAPPER_XML_HONE;

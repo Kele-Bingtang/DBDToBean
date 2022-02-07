@@ -3,10 +3,10 @@ package cn.kbt.dbdtobean.inter;
 import java.io.IOException;
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/21 21:50
- * @Version 1.0
- * @Describe MVC接口
+ * @author Kele-Bing
+ * @since 2021/9/21 21:50
+ * @version 1.0
+ *  MVC接口
  */
 public interface IDBDToMVC {
     // Controller相关

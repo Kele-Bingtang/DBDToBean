@@ -28,6 +28,7 @@ package cn.kbt.dbdtobean.log;
  * endTime : 2020/2/6/22:44:55
  */
 public class LogInfo {
+    
     public String logInfo(){
         return "V1.0(2021/6/28/20:18:52 - 2021/7/1/16:48:01)\n" +
                 "实现了数据库的表自动生成JavaBean文件的基本功能\n" +
@@ -62,8 +63,8 @@ public class LogInfo {
                 "\t\t原版：生成set和get 为       public void setBUser(String bUser){this.bUser = bUser;}  public String getBUser(){return bUser;}  \n" +
                 "\t\t新版：方法名符合Java规范    public void setbUser(String bUser){this.bUser = bUser;}  public String getbUser(){return bUser;}  \n" +
                 "\t6.支持springboot的自动装配，并且提供properties类，只需在application配置文件里以dbdtobean开头的数据库参数，即可自动生成数据库Connection对象\n" +
-                "\t7.把类注解的@CreateTime替换为@Create\n" +
-                "\t8.支持类注释@Author的自定义，默认读取电脑的用户名\n" +
+                "\t7.把类注解的@sinceTime替换为@since\n" +
+                "\t8.支持类注释@author的自定义，默认读取电脑的用户名\n" +
                 "\t\n" +
                 "\tbug：1.mysql的blob类型无法转换成Java的byte[]类型\n" +
                 "\t后期：beanNameUpOrLow作用是把首字母改为大小写，该名称应该改为FirstBeanNameUpOrLow\n" +

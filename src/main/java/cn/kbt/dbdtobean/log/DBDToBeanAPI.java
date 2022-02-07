@@ -1,10 +1,10 @@
 package cn.kbt.dbdtobean.log;
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/25 16:46
- * @Version 1.0
- * @Describe API文档
+ * @author Kele-Bing
+ * @since 2021/9/25 16:46
+ * @version 1.0
+ *  API文档
  */
 public class DBDToBeanAPI {
 

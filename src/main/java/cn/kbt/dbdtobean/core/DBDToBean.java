@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 public class DBDToBean extends DBDToBeanCore {
-    
+
     private boolean isMultimediaContent = false;
 
     public DBDToBean() {
@@ -35,7 +35,7 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public void setAuthorName(boolean authorName) {
-        if(!authorName){
+        if (!authorName) {
             DBDToBeanContext.getDbdToBeanProperties().setAuthorName(null);
         }
     }
@@ -43,7 +43,7 @@ public class DBDToBean extends DBDToBeanCore {
     public void setCreateBeanName(String createBeanName) {
         DBDToBeanContext.getDbdToBeanDefinition().setCreateBeanName(createBeanName);
     }
-    
+
     public String generateAttrFromTable(String tableName, boolean isConstructor, boolean isSetAndGet, boolean isToString) throws SQLException {
         return super.generateAttrFromTable(tableName, isConstructor, isSetAndGet, isToString);
     }
@@ -65,11 +65,11 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public void setPackageName(String packageName, boolean jarPackage) {
-        DBDToBeanContext.getDbdToBeanDefinition().setPackageNameAndJarPackage(packageName,jarPackage);
+        DBDToBeanContext.getDbdToBeanDefinition().setPackageNameAndJarPackage(packageName, jarPackage);
     }
 
     public void setJarPackage(boolean jarPackage) {
-       DBDToBeanContext.getDbdToBeanDefinition().setJarPackage(jarPackage);
+        DBDToBeanContext.getDbdToBeanDefinition().setJarPackage(jarPackage);
     }
 
     public void setHeadComment(boolean setHeadComment) {
@@ -85,7 +85,7 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public void setHeadComment(String headComment, String commentType) {
-        DBDToBeanContext.getDbdToBeanDefinition().getHeadComment().setHeadComment(headComment,commentType);
+        DBDToBeanContext.getDbdToBeanDefinition().getHeadComment().setHeadComment(headComment, commentType);
     }
 
     public void setAllComments(boolean generateAllComment) {
@@ -113,7 +113,7 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public void setConstructorComment(String nullConstructorComment, String constructorComment) {
-        DBDToBeanContext.getCustomComment().setConstructorComment(nullConstructorComment,constructorComment);
+        DBDToBeanContext.getCustomComment().setConstructorComment(nullConstructorComment, constructorComment);
     }
 
     public void setSetAndGetComment(boolean isSetAndGetComment) {
@@ -121,7 +121,7 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public void setSetAndGetComment(List<String> SetComment, List<String> GetComment) {
-        DBDToBeanContext.getCustomComment().setSetAndGetComment(SetComment,GetComment);
+        DBDToBeanContext.getCustomComment().setSetAndGetComment(SetComment, GetComment);
     }
 
     public void setSetComment(List<String> SetComment) {
@@ -186,49 +186,49 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public String exportToFile(String fileContent, String path, String dirName) throws IOException {
-       if(!isMultimediaContent){
-           if(DBDToBeanUtils.isEmpty(path)){
-               if(DBDToBeanUtils.isEmpty(dirName) && DBDToBeanUtils.isEmpty(DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation())){
-                   System.out.println("正在【电脑桌面】路径下为您创建【JavaBean文件】" );
-               }else if(DBDToBeanUtils.isEmpty(DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation())){
-                   System.out.println("正在【电脑桌面】路径下的【" + dirName + "】文件夹里为您创建【JavaBean文件】" );
-               }
-           }else if(DBDToBeanUtils.isEmpty(dirName)){
-               System.out.println("正在【" + path + "】路径下为您创建【JavaBean文件】" );
-           }else {
-               System.out.println("正在【" + path + "】路径下的【" + dirName + "】文件夹里为您创建【JavaBean文件】" );
-           }
-       }
+        if (!isMultimediaContent) {
+            if (DBDToBeanUtils.isEmpty(path)) {
+                if (DBDToBeanUtils.isEmpty(dirName) && DBDToBeanUtils.isEmpty(DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation())) {
+                    System.out.println("正在【电脑桌面】路径下为您创建【JavaBean文件】");
+                } else if (DBDToBeanUtils.isEmpty(DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation())) {
+                    System.out.println("正在【电脑桌面】路径下的【" + dirName + "】文件夹里为您创建【JavaBean文件】");
+                }
+            } else if (DBDToBeanUtils.isEmpty(dirName)) {
+                System.out.println("正在【" + path + "】路径下为您创建【JavaBean文件】");
+            } else {
+                System.out.println("正在【" + path + "】路径下的【" + dirName + "】文件夹里为您创建【JavaBean文件】");
+            }
+        }
         String createPath = super.exportToFile(fileContent, path, dirName);
         DBDToMVC dbdToMVC = new DBDToMVC();
         dbdToMVC.dbdToMVC();
         return createPath;
     }
 
-    public String exportToFile(HashMap<String,String> fileContentMap) throws IOException, SQLException {
-        return this.exportToFile(fileContentMap,null,null);
+    public String exportToFile(HashMap<String, String> fileContentMap) throws IOException, SQLException {
+        return this.exportToFile(fileContentMap, null, null);
     }
 
-    public String exportToFile(HashMap<String,String> fileContentMap, String path) throws IOException, SQLException {
-        return this.exportToFile(fileContentMap,path,null);
+    public String exportToFile(HashMap<String, String> fileContentMap, String path) throws IOException, SQLException {
+        return this.exportToFile(fileContentMap, path, null);
     }
 
-    public String exportToFile(HashMap<String,String> fileContentMap, String path, String dirName) throws IOException, SQLException {
+    public String exportToFile(HashMap<String, String> fileContentMap, String path, String dirName) throws IOException, SQLException {
         isMultimediaContent = true;
         String createPath = "";
         System.out.println("系统检测到提供的数据库共有【" + fileContentMap.size() + "】个表，准备生成文件");
         if ((DBDToBeanUtils.isEmpty(dirName) || dirName.equals(" ")) && DBDToBeanUtils.isEmpty(path)) {
             // 默认生成一个文件夹，以数据库名字+随机数字为文件夹名
-            if(DBDToBeanUtils.isEmpty(DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation())){
+            if (DBDToBeanUtils.isEmpty(DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation())) {
                 dirName = super.getConnection().getMetaData().getDatabaseProductName() + "_" + DBDToBeanUtils.randomNum();
             }
             // 生成文件夹
             createPath = super.exportToFile("", path, dirName);
-            System.out.println("在【" + createPath + "】处创建成功！" );
+            System.out.println("在【" + createPath + "】处创建成功！");
         }
         int i = 1;
         path = path != null ? path : super.beanLocation().getPath();
-        System.out.println("正在【" + path + "】路径下" + (dirName == null?"" : "的【" + dirName + "】文件夹里") + "为您创建【JavaBean文件】:" );
+        System.out.println("正在【" + path + "】路径下" + (dirName == null ? "" : "的【" + dirName + "】文件夹里") + "为您创建【JavaBean文件】:");
         for (Map.Entry<String, String> entry : fileContentMap.entrySet()) {
             System.out.println("正在创建第【" + i++ + "】个文件：" + entry.getKey());
             createPath = super.exportToFiles(entry.getKey(), entry.getValue(), path, dirName);
@@ -244,15 +244,15 @@ public class DBDToBean extends DBDToBeanCore {
     }
 
     public String firstCharToUpperCase(String fieldName) {
-       return DBDToBeanUtils.firstCharToUpperCase(fieldName);
+        return DBDToBeanUtils.firstCharToUpperCase(fieldName);
     }
 
     public String firstCharToLowerCase(String fieldName) {
-       return DBDToBeanUtils.firstCharToLowerCase(fieldName);
+        return DBDToBeanUtils.firstCharToLowerCase(fieldName);
     }
 
     public String _CharToUpperCase(String name) {
-       return DBDToBeanUtils._CharToUpperCase(name);
+        return DBDToBeanUtils._CharToUpperCase(name);
     }
 
     public void setDbdToBeanProperties(String driverName, String url, String username, String password) {
@@ -269,7 +269,7 @@ public class DBDToBean extends DBDToBeanCore {
     public void setEntityLocation(String entityLocation) {
         DBDToBeanContext.getDbdToMVCDefinition().setEntityLocation(entityLocation);
     }
-    
+
     public void setControllerLocation(String controllerLocation) {
         DBDToBeanContext.getDbdToMVCDefinition().setControllerLocation(controllerLocation);
     }
@@ -313,8 +313,8 @@ public class DBDToBean extends DBDToBeanCore {
             throwable.printStackTrace();
         }
     }
-    
-    public void setDbdToBeanProperties(DBDToBeanProperties dbdToBeanPorperties){
+
+    public void setDbdToBeanProperties(DBDToBeanProperties dbdToBeanPorperties) {
         DBDToBeanContext.setDbdToBeanProperties(dbdToBeanPorperties);
     }
 
@@ -322,9 +322,9 @@ public class DBDToBean extends DBDToBeanCore {
         super.parseDateBaseTypeAndGetSQL("");
         return DBDToBeanContext.getDbdToBeanDefinition().getDateBaseType();
     }
-    
- // ----------------------------------- DBDToMVC -----------------------------------
-    
+
+    // ----------------------------------- DBDToMVC -----------------------------------
+
     public void setPrefix(String prefix) {
         DBDToBeanContext.getDbdToMVCDefinition().setPrefix(prefix);
     }
@@ -393,7 +393,7 @@ public class DBDToBean extends DBDToBeanCore {
     public DBDToBeanDefinition getDbdToBeanDefinition() {
         return DBDToBeanContext.getDbdToBeanDefinition();
     }
-    
+
     public List<DBDToBeanDefinition> getDbdToBeanDefinitions() {
         return DBDToBeanContext.getDbdToBeanDefinitions();
     }
@@ -405,25 +405,25 @@ public class DBDToBean extends DBDToBeanCore {
     public void setGenerateCURD(boolean generateCURD) {
         DBDToBeanContext.getDbdToMVCDefinition().setGeneratecurd(generateCURD);
     }
-    
-    public void setMVImplName(String implLocation){
+
+    public void setMVImplName(String implLocation) {
         AbstractDBDToMVC.IMPL_NAME = implLocation;
     }
-    
-    public void setXmlPublicAndHttp(String xmlPublicAndHttp){
+
+    public void setXmlPublicAndHttp(String xmlPublicAndHttp) {
         AbstractDBDToMVC.xmlPublicAndHttp = xmlPublicAndHttp;
     }
 
     public void setMavenOrSimple(boolean mavenOrSimple) {
         DBDToBeanContext.getDbdToMVCDefinition().setMavenOrSimple(mavenOrSimple);
     }
-    
-    public LogInfo getLogInfo(){
+
+    public LogInfo getLogInfo() {
         return new LogInfo();
     }
 
     public void explain(ResultSet rs) throws SQLException {
         DBDToBeanUtils.explain(rs);
     }
-    
+
 }

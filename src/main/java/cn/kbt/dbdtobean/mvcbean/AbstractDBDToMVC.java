@@ -8,97 +8,142 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * @Author Kele-Bing
- * @Create 2021/9/21 23:30
- * @Version 1.0
- * @Describe 抽象MVC类
+ * @author Kele-Bing
+ * @version 1.0
+ * @since 2021/9/21 23:30
+ * 抽象MVC类
  */
 public abstract class AbstractDBDToMVC {
-    /** Maven目录 **/
+    /**
+     * Maven目录
+     **/
     public final static String MAVEN_HONE = "src\\main\\java\\";
-    /** 普通目录 **/
+    /**
+     * 普通目录
+     **/
     protected final static String SIMPLE_HONE = "src\\";
-    /** 实现类文件夹名 **/
+    /**
+     * 实现类文件夹名
+     **/
     public static String IMPL_NAME = "impl";
-    /** Mapper的xml开头配置 **/
+    /**
+     * Mapper的xml开头配置
+     **/
     public static String xmlPublicAndHttp = "PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN\"\n" +
             "\t\t\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\"";
-    /** 是否需要接口类 **/
+    /**
+     * 是否需要接口类
+     **/
     protected boolean isInterface = false;
-    /** 注解 **/
+    /**
+     * 注解
+     **/
     protected String mvcAnnotation = "";
 
     /**
      * 创建接口类
+     *
+     * @param definition MVC 信息
+     * @param createBeanName 文件名
+     * @param mvcName mvc 类型
+     * @return 内容
+     * @throws IOException IO 异常
      */
-    public String createInterfaces(DBDToMVCDefinition definition,String createBeanName,String mvcName) throws IOException {
+    public String createInterfaces(DBDToMVCDefinition definition, String createBeanName, String mvcName) throws IOException {
         String location = parseLocation(definition, mvcName);
         File file = mvcFilePath(DBDToBeanContext.getDbdToMVCDefinition(), null, location);
         boolean mkdir = file.mkdirs();
         createBeanName = parseMVCName(DBDToBeanContext.getDbdToMVCDefinition(), createBeanName, mvcName);
-        file = new File(file +  "\\" + createBeanName + ".java");
+        file = new File(file + "\\" + createBeanName + ".java");
         FileWriter fw = new FileWriter(file);
         fw.write(mvcInterContent(definition, createBeanName, mvcName));
         fw.flush();
         fw.close();
         return createBeanName;
     }
+
     /**
      * 创建普通类或者接口的实现类
+     * 
+     * @param definition MVC 信息
+     * @param createBeanName 文件名
+     * @param mvcName mvc 类型
+     * @param mvcInterfaceName MVC 接口类名
+     * @return 内容
+     * @throws IOException IO 异常
      */
-    public String createBean(DBDToMVCDefinition definition,String createBeanName,String mvcName,String mvcInterfaceName) throws IOException {
+    public String createBean(DBDToMVCDefinition definition, String createBeanName, String mvcName, String mvcInterfaceName) throws IOException {
         String location = parseLocation(definition, mvcName);
         File file = mvcFilePath(definition, mvcInterfaceName, location);
         boolean mkdir = file.mkdirs();
         // 给 createBeanName 加上 Controller 或 Service 或 Dao 或 Mapper
         createBeanName = parseMVCName(DBDToBeanContext.getDbdToMVCDefinition(), createBeanName, mvcName);
-        file = new File(file +  "\\" + createBeanName + ".java");
+        file = new File(file + "\\" + createBeanName + ".java");
         FileWriter fw = new FileWriter(file);
         fw.write(mvcBeanContent(definition, createBeanName, mvcName, mvcInterfaceName));
         fw.flush();
         fw.close();
         return createBeanName;
     }
+
     /**
      * 解析路径，获取生成的路径
+     *
+     * @param definition MVC 信息
+     * @param mvcInterfaceName MVC 接口名
+     * @param location 包路径
+     * @return 文件对象
      */
-    public File mvcFilePath(DBDToMVCDefinition definition,String mvcInterfaceName,String location){
+    public File mvcFilePath(DBDToMVCDefinition definition, String mvcInterfaceName, String location) {
         File file;
-        if(DBDToBeanUtils.isNotEmpty(mvcInterfaceName)){
+        if (DBDToBeanUtils.isNotEmpty(mvcInterfaceName)) {
             isInterface = true;
             file = new File(System.getProperty("user.dir") + "\\" + definition.getModulesName() + "\\" + definition.getMavenOrSimple() + DBDToBeanUtils.packageToPath(location) + "\\" + IMPL_NAME);
-        }else {
+        } else {
             isInterface = false;
             file = new File(System.getProperty("user.dir") + "\\" + definition.getModulesName() + "\\" + definition.getMavenOrSimple() + DBDToBeanUtils.packageToPath(location));
         }
         return file;
     }
+
     /**
      * 生成接口类内容
+     *
+     * @param definition MVC 信息
+     * @param createBeanName 文件名
+     * @param mvcName mvc 类型
+     * @return 内容
      */
-    public String mvcInterContent(DBDToMVCDefinition definition,String createBeanName,String mvcName){
+    public String mvcInterContent(DBDToMVCDefinition definition, String createBeanName, String mvcName) {
         StringBuilder content = new StringBuilder();
         String location = parseLocation(definition, mvcName);
         content.append(DBDToBeanContext.getDbdToBeanDefinition().setThenGetPackageName(location)).append("\n");
-        if(DBDToBeanContext.getDefaultComment().isSetHeadComment()){
+        if (DBDToBeanContext.getDefaultComment().isSetHeadComment()) {
             content.append(DBDToBeanContext.getDbdToBeanDefinition().getHeadComment().generateHeadComments(DBDToBeanContext.getDbdToBeanProperties().getAuthorName()).toString());
         }
-        if(definition.isMvcAnnotation() && mvcName.equals(DBDToMapper.MAPPER_INTERFACE_NAME)){
+        if (definition.isMvcAnnotation() && mvcName.equals(DBDToMapper.MAPPER_INTERFACE_NAME)) {
             content.insert(content.indexOf(";") + 1, "\nimport org.apache.ibatis.annotations." + mvcAnnotation.substring(1) + ";");
             content.append(mvcAnnotation).append("\n");
         }
         content.append("public interface ").append(createBeanName).append(" {\n\n");
         // 截取实体类名字
         int index = createBeanName.indexOf(mvcName);
-        String entityName = createBeanName.substring(0,index);
-        new DBDToCurd().generateInterCURD(content,entityName);
+        String entityName = createBeanName.substring(0, index);
+        new DBDToCurd().generateInterCURD(content, entityName);
         content.append("}");
         return content.toString();
     }
+
     /**
      * 生成普通类内容或者接口的实现类内容
+     *
+     * @param definition MVC 信息
+     * @param createBeanName 文件名
+     * @param mvcName mvc 类型
+     * @param mvcInterfaceName MVC 接口类型
+     * @return 内容
      */
-    public String mvcBeanContent(DBDToMVCDefinition definition,String createBeanName,String mvcName,String mvcInterfaceName){
+    public String mvcBeanContent(DBDToMVCDefinition definition, String createBeanName, String mvcName, String mvcInterfaceName) {
         StringBuilder content = new StringBuilder();
         String location = parseLocation(definition, mvcName);
         DBDToCurd dbdToCurd = new DBDToCurd();
@@ -107,11 +152,11 @@ public abstract class AbstractDBDToMVC {
         String entityName = createBeanName.substring(0, index);
         // 调用类，如 Controller 调用 Service，Service 调用 Mapper
         String importBeanName = null;
-        if(isInterface){
+        if (isInterface) {
             // Service、Dao、Mapper
             content.append(DBDToBeanContext.getDbdToBeanDefinition().setThenGetPackageName(location + "." + IMPL_NAME))
                     .append("import ").append(location).append(".").append(mvcInterfaceName).append(";\n\n");
-            if(DBDToBeanContext.getDefaultComment().isSetHeadComment()){
+            if (DBDToBeanContext.getDefaultComment().isSetHeadComment()) {
                 content.append(DBDToBeanContext.getDbdToBeanDefinition().getHeadComment().generateHeadComments(DBDToBeanContext.getDbdToBeanProperties().getAuthorName()).toString());
             }
             // if(definition.isMvcAnnotation() && mvcName.equals(DBDToDao.DAO_IMPL_NAME)){
@@ -121,36 +166,36 @@ public abstract class AbstractDBDToMVC {
             //     content.insert(content.indexOf(";") + 1, "\nimport org.springframework.stereotype." + mvcAnnotation.substring(1) + ";");
             //     content.append(mvcAnnotation).append("\n");
             // }
-            if(definition.isMvcAnnotation() && !mvcName.equals(DBDToDao.DAO_IMPL_NAME)){
+            if (definition.isMvcAnnotation() && !mvcName.equals(DBDToDao.DAO_IMPL_NAME)) {
                 content.insert(content.indexOf(";") + 1, "\nimport org.springframework.stereotype." + mvcAnnotation.substring(1) + ";");
                 content.append(mvcAnnotation).append("\n");
             }
             content.append("public class ").append(createBeanName).append(" implements ").append(mvcInterfaceName).append(" {\n\n");
-            if(mvcName.equals(DBDToService.SERVICE_IMPL_NAME)){
-                if(DBDToBeanUtils.isNotEmpty(DBDToBeanContext.getDbdToMVCDefinition().getMapperLocation())) {
+            if (mvcName.equals(DBDToService.SERVICE_IMPL_NAME)) {
+                if (DBDToBeanUtils.isNotEmpty(DBDToBeanContext.getDbdToMVCDefinition().getMapperLocation())) {
                     importBeanName = parseMVCName(DBDToBeanContext.getDbdToMVCDefinition(), entityName, DBDToMapper.MAPPER_INTERFACE_NAME);
 
                     content.insert(content.indexOf(";") + 1, "\nimport " + DBDToBeanContext.getDbdToMVCDefinition().getMapperLocation() + "." + importBeanName + ";\nimport org.springframework.beans.factory.annotation.Autowired;");
                     content.append("\t@Autowired\n\tprivate ").append(importBeanName).append(" ").append(DBDToBeanUtils.firstCharToLowerCase(importBeanName)).append(";\n\n");
-                }else if(DBDToBeanUtils.isNotEmpty(DBDToBeanContext.getDbdToMVCDefinition().getDaoLocation())){
+                } else if (DBDToBeanUtils.isNotEmpty(DBDToBeanContext.getDbdToMVCDefinition().getDaoLocation())) {
                     importBeanName = parseMVCName(DBDToBeanContext.getDbdToMVCDefinition(), entityName, DBDToDao.DAO_IMPL_NAME);
 
                     content.insert(content.indexOf(";") + 1, "\nimport " + DBDToBeanContext.getDbdToMVCDefinition().getDaoLocation() + "." + IMPL_NAME + "." + importBeanName + ";\nimport org.springframework.beans.factory.annotation.Autowired;");
                     content.append("\t@Autowired\n\tprivate ").append(importBeanName).append(" ").append(DBDToBeanUtils.firstCharToLowerCase(importBeanName)).append(";\n\n");
                 }
             }
-        }else {
+        } else {
             // Controller
             content.append(DBDToBeanContext.getDbdToBeanDefinition().setThenGetPackageName(location)).append("\n");
-            if(DBDToBeanContext.getDefaultComment().isSetHeadComment()){
+            if (DBDToBeanContext.getDefaultComment().isSetHeadComment()) {
                 content.append(DBDToBeanContext.getDbdToBeanDefinition().getHeadComment().generateHeadComments(DBDToBeanContext.getDbdToBeanProperties().getAuthorName()).toString());
             }
-            if(definition.isMvcAnnotation()){
+            if (definition.isMvcAnnotation()) {
                 content.insert(content.indexOf(";") + 1, "import org.springframework.stereotype." + mvcAnnotation.substring(1) + ";");
                 content.append(mvcAnnotation).append("\n");
             }
             content.append("public class ").append(createBeanName).append(" {\n\n");
-            if(DBDToBeanUtils.isNotEmpty(DBDToBeanContext.getDbdToMVCDefinition().getServiceLocation())) {
+            if (DBDToBeanUtils.isNotEmpty(DBDToBeanContext.getDbdToMVCDefinition().getServiceLocation())) {
                 importBeanName = parseMVCName(DBDToBeanContext.getDbdToMVCDefinition(), entityName, DBDToService.SERVICE_IMPL_NAME);
                 // String serviceName = DBDToBeanUtils.firstCharToUpperCase(entityName) + DBDToService.SERVICE_IMPL_NAME;
                 content.insert(content.indexOf(";") + 1, "\nimport " + DBDToBeanContext.getDbdToMVCDefinition().getServiceLocation() + "." + IMPL_NAME + "." + importBeanName + ";\nimport org.springframework.beans.factory.annotation.Autowired;\n");
@@ -161,41 +206,52 @@ public abstract class AbstractDBDToMVC {
         content.append("}");
         return content.toString();
     }
+
     /**
      * 解析位置，获取不同的MVC全类路径
+     *
+     * @param definition MVC 信息
+     * @param mvcName MVC 类型
+     * @return 内容
      */
-    public String parseLocation(DBDToMVCDefinition definition,String mvcName){
+    public String parseLocation(DBDToMVCDefinition definition, String mvcName) {
         String location = DBDToBeanContext.getDbdToBeanDefinition().getPackageName();
         switch (mvcName) {
             case DBDToController.CONTROLLER_NAME:
                 location = definition.getControllerLocation();
-                if(!mvcAnnotation.equals("@Controller"))
+                if (!mvcAnnotation.equals("@Controller"))
                     mvcAnnotation = "@Controller";
                 break;
             case DBDToService.SERVICE_IMPL_NAME:
             case DBDToService.SERVICE_INTERFACE_NAME:
                 location = definition.getServiceLocation();
-                if(!mvcAnnotation.equals("@Service"))
+                if (!mvcAnnotation.equals("@Service"))
                     mvcAnnotation = "@Service";
                 break;
             case DBDToDao.DAO_IMPL_NAME:
             case DBDToDao.DAO_INTERFACE_NAME:
                 location = definition.getDaoLocation();
-                if(!mvcAnnotation.equals("@Mapper"))
+                if (!mvcAnnotation.equals("@Mapper"))
                     mvcAnnotation = "@Mapper";
                 break;
             case DBDToMapper.MAPPER_INTERFACE_NAME:
                 location = definition.getMapperLocation();
-                if(!mvcAnnotation.equals("@Mapper"))
+                if (!mvcAnnotation.equals("@Mapper"))
                     mvcAnnotation = "@Mapper";
                 break;
         }
         return location;
     }
+
     /**
      * 解析MVC的文件名字，封装文件名字的前桌和后缀
+     *
+     * @param definition MVC 信息
+     * @param createBeanName 文件名
+     * @param mvcName mvc 类型
+     * @return 内容
      */
-    public String parseMVCName(DBDToMVCDefinition definition,String createBeanName,String mvcName){
+    public String parseMVCName(DBDToMVCDefinition definition, String createBeanName, String mvcName) {
         switch (mvcName) {
             case DBDToController.CONTROLLER_NAME:
                 return definition.getPrefix() + definition.getControllerPre() + createBeanName + definition.getControllerSuf() + definition.getSuffix();

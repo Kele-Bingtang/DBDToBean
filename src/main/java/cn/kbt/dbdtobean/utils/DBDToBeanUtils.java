@@ -11,6 +11,8 @@ import java.util.Random;
 public class DBDToBeanUtils {
     /**
      * 关闭资源
+     * @param rs 结果集
+     * @param pstmt PreparedStatement 对象
      */
     public static void close(ResultSet rs, PreparedStatement pstmt) {
         try {
@@ -27,6 +29,9 @@ public class DBDToBeanUtils {
 
     /**
      * 关闭资源
+     * @param rs 结果集
+     * @param pstmt PreparedStatement 对象
+     * @param conn 数据库连接对象
      */
     public static void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
         try {
@@ -54,6 +59,8 @@ public class DBDToBeanUtils {
 
     /**
      * 去掉字符串的下划线，并且下划线后的首字母大写
+     * @param name 字符串
+     * @return 字符串
      */
     public static String _CharToUpperCase(String name) {
         StringBuilder charUpper = new StringBuilder();
@@ -70,6 +77,8 @@ public class DBDToBeanUtils {
 
     /**
      * 将字符串的首字母转为大写
+     * @param fieldName 字符串
+     * @return 字符串
      */
     public static String firstCharToUpperCase(String fieldName) {
         char[] chars = fieldName.toCharArray();
@@ -83,6 +92,8 @@ public class DBDToBeanUtils {
 
     /**
      * 将字符串的首字母转为小写
+     * @param fieldName 字符串
+     * @return 字符串
      */
     public static String firstCharToLowerCase(String fieldName) {
         if (fieldName.substring(0, 1).equals(fieldName.substring(0, 1).toUpperCase())) {
@@ -96,6 +107,8 @@ public class DBDToBeanUtils {
 
     /**
      * 字符串转为小写
+     * @param content 字符串
+     * @return 字符串
      */
     public String toLowerCase(String content){
         char[] contentChars = content.toCharArray();
@@ -106,8 +119,11 @@ public class DBDToBeanUtils {
         }
         return String.valueOf(contentChars);
     }
+
     /**
      * 字符串转为大写
+     * @param content 字符串
+     * @return 字符串
      */
     public String toUpperCase(String content){
         char[] contentChars = content.toCharArray();
@@ -121,8 +137,10 @@ public class DBDToBeanUtils {
 
     /**
      * 如果字符串第二个位置的字母为大写，则返回true，反之false
-     * 符合set和get方法，tTs ==> 生成set和get为：settTs(){}   gettTs(){}
+     * 符合set和get方法，生成set和get为：settTs(){}  gettTs(){}
      * 而不是 setTTs(){}  getTTs(){}
+     * @param content 字符串
+     * @return boolean
      */
     public static boolean isTwoCharUpper(String content){
         if(content.length() > 2){
@@ -133,6 +151,7 @@ public class DBDToBeanUtils {
 
     /**
      * 0-1000随机数字，生成文件名
+     * @return 文件名
      */
     public static int randomNum() {
         //随机数字，生成文件名
@@ -146,22 +165,30 @@ public class DBDToBeanUtils {
         randomNum.add(nextInt);
         return nextInt;
     }
+
     /**
      * 格式化并获取当前时间
+     * @return 当前时间
      */
     public static String getCurrentTime(){
         Date date = new Date();
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }
+
     /**
      * 根据格式格式化并获取当前时间
+     * @param format 字符串
+     * @return 当前时间
      */
     public static String getCurrentTime(String format){
         Date date = new Date();
         return new SimpleDateFormat(format).format(date);
     }
+
     /**
      * 全类名转为类路径
+     * @param content 全类名
+     * @return 类路径
      */
     public static String packageToPath(String content){
         return content.replace(".", "/");
@@ -169,6 +196,11 @@ public class DBDToBeanUtils {
 
     /**
      * 获取Mysql的数据库源对象
+     * @param driverName 驱动
+     * @param url 地址
+     * @param username 数据库用户名
+     * @param password 数据库密码
+     * @return 连接对象
      */
     public static Connection getMysqlConnection(String driverName, String url, String username, String password) {
         Connection conn = null;
@@ -183,8 +215,14 @@ public class DBDToBeanUtils {
         }
         return conn;
     }
+
     /**
      * 获取Oracle的数据库源对象
+     * @param driverName 驱动
+     * @param url 地址
+     * @param username 数据库用户名
+     * @param password 数据库密码
+     * @return 连接对象
      */
     public static Connection getOracleConnection(String driverName, String url, String username, String password) {
         Connection conn = null;
@@ -204,6 +242,8 @@ public class DBDToBeanUtils {
     /**
      * 解释信息
      * 查询的表的信息的内容
+     * @param rs 结果集
+     * @throws SQLException SQL 异常
      */
     public static void explain(ResultSet rs) throws SQLException {
         ResultSetMetaData data = rs.getMetaData();
@@ -261,6 +301,5 @@ public class DBDToBeanUtils {
             System.out.println("获得列" + i + "能否出现在where中:" + isSearchable);
         }
     }
-
 
 }

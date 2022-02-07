@@ -5,29 +5,43 @@ import cn.kbt.dbdtobean.utils.DBDToBeanUtils;
 import java.sql.Connection;
 
 public class DBDToBeanProperties {
-    /** 数据库源对象 **/
+    /**
+     * 数据库源对象
+     **/
     private Connection conn;
-    /** 数据库驱动 **/
+    /**
+     * 数据库驱动
+     **/
     private String driverName;
-    /** 数据库url **/
+    /**
+     * 数据库url
+     **/
     private String url;
-    /** 数据库用户名 **/
+    /**
+     * 数据库用户名
+     **/
     private String username;
-    /** 数据库密码 **/
+    /**
+     * 数据库密码
+     **/
     private String password;
-    /** 数据库类型 **/
+    /**
+     * 数据库类型
+     **/
     private String dateBaseType = "MySQL";
-    /** 作者 **/
+    /**
+     * 作者
+     **/
     private String authorName = System.getenv().get("USERNAME");
 
     public DBDToBeanProperties() {
     }
 
     public Connection getConn() {
-        if(conn == null){
-            if(dateBaseType .equals("MySQL")){
+        if (conn == null) {
+            if (dateBaseType.equals("MySQL")) {
                 conn = DBDToBeanUtils.getMysqlConnection(driverName, url, username, password);
-            }else if (dateBaseType.equals("Oracle")){
+            } else if (dateBaseType.equals("Oracle")) {
                 conn = DBDToBeanUtils.getOracleConnection(driverName, url, username, password);
             }
         }
@@ -79,7 +93,7 @@ public class DBDToBeanProperties {
     }
 
     public String getAuthorName() {
-        if(DBDToBeanUtils.isEmpty(authorName)){
+        if (DBDToBeanUtils.isEmpty(authorName)) {
             return "";
         }
         return authorName;
