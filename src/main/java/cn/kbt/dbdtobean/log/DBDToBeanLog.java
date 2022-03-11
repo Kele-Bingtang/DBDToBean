@@ -21,13 +21,18 @@ package cn.kbt.dbdtobean.log;
  * endTime : 2021/8/9/17:38:19
  * ---------------------------------
  * V1.3：
- * startTime : 2020/9/19/16:14:32
- * endTime : 2020/9/24/15:52:49
+ * startTime : 2021/9/19/16:14:32
+ * endTime : 2021/9/24/15:52:49
+ * ---------------------------------
  * V1.4：
- * startTime : 2020/2/6/13:14:25
- * endTime : 2020/2/6/22:44:55
+ * startTime : 2021/2/6/13:14:25
+ * endTime : 2021/2/6/22:44:55
+ * ---------------------------------
+ * V1.5：
+ * startTime : 2022/3/11/10:22:35
+ * endTime : 2022/3/12/0:31:55
  */
-public class LogInfo {
+public class DBDToBeanLog {
     
     public String logInfo(){
         return "V1.0(2021/6/28/20:18:52 - 2021/7/1/16:48:01)\n" +
@@ -63,8 +68,8 @@ public class LogInfo {
                 "\t\t原版：生成set和get 为       public void setBUser(String bUser){this.bUser = bUser;}  public String getBUser(){return bUser;}  \n" +
                 "\t\t新版：方法名符合Java规范    public void setbUser(String bUser){this.bUser = bUser;}  public String getbUser(){return bUser;}  \n" +
                 "\t6.支持springboot的自动装配，并且提供properties类，只需在application配置文件里以dbdtobean开头的数据库参数，即可自动生成数据库Connection对象\n" +
-                "\t7.把类注解的@sinceTime替换为@since\n" +
-                "\t8.支持类注释@author的自定义，默认读取电脑的用户名\n" +
+                "\t7.把类注解的@CreateTime替换为@Create\n" +
+                "\t8.支持类注释@Author的自定义，默认读取电脑的用户名\n" +
                 "\t\n" +
                 "\tbug：1.mysql的blob类型无法转换成Java的byte[]类型\n" +
                 "\t后期：beanNameUpOrLow作用是把首字母改为大小写，该名称应该改为FirstBeanNameUpOrLow\n" +
@@ -117,10 +122,15 @@ public class LogInfo {
                 "\t3.添加 spring boot配置文件输入dbdbtobean的参数，会有提示的功能\n" +
                 "\t4.优化dbdtobean多个类加入spring容器的顺序\n" +
                 "\t\n" +
-                "V1.4(2022.2.6 13:14:25 - 2020.2.6 22:44:55) \n" +
+                "V1.4(2022.2.6 13:14:25 - 2022.2.6 22:44:55) \n" +
                 "\n" +
                 "\t1.优化生成 MVC 文件时，import 的间距过长\n" +
                 "\t2.生成 Controller 类时，自动调用 Service 对应的方法，以及 Service 调用 Dao 或 Mapper 对应的方法（两者都存在时，Mapper 优先级大于 Dao）\n" +
-                "\t";
+                "\t3.Dao 层不再提供 @Mapper 注解，这作为原生 JDBC 使用\n" +
+                "\t\n" +
+                "V1.5(2022.3.11 10:22:35 - 2022.3.12 0:31:55) \n" +
+                "\n" +
+                "\t1.解决生成 XML 文件时，方法不匹配 Mapper 接口\n" +
+                "\t2.解决添加前缀和后缀后，导致类内容混乱的问题";
     }
 }

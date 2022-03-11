@@ -93,7 +93,7 @@ public abstract class DBDToBeanCore implements IDBDToBeanCore {
         sb.append("public class ").append(createBeanName).append(" {\n");
         for (int i = 1; i <= JDBCData.getColumnCount(); i++) {
             //添加自定义注释，长度不满足则生成规定的注释
-            DBDToBeanContext.getCustomComment().customFiledComment(sb, columnsInfo, parseFieldName(JDBCData.getColumnName(i)) + " ：", i);
+            DBDToBeanContext.getCustomComment().customFiledComment(sb, columnsInfo, parseFieldName(JDBCData.getColumnName(i)) + "：", i);
             sb.append("\tprivate ").append(fieldType(JDBCData.getColumnClassName(i)))
                     .append(" ").append(parseFieldName(JDBCData.getColumnName(i))).append(";").append("\n");
         }

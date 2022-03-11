@@ -18,6 +18,7 @@ public class DBDToMapper extends AbstractDBDToMVC {
     protected final static String MAVEN_MAPPER_XML_HONE = "src\\main\\resources\\";
     protected final static String SIMPLE_MAPPER_XML_HONE = "src\\";
     protected static String interfacesName = null;
+    private String entityName;
 
     /**
      * 生成Mapper层接口目录以及内容
@@ -41,11 +42,12 @@ public class DBDToMapper extends AbstractDBDToMVC {
      */
     public void mapperXML(String createBeanName) throws IOException {
         createBeanName = DBDToBeanUtils._CharToUpperCase(createBeanName);
+        this.entityName = createBeanName;
         DBDToMVCDefinition definition = DBDToBeanContext.getDbdToMVCDefinition();
         File file = new File(System.getProperty("user.dir") + "\\" + definition.getModulesName() + "\\" + definition.getMapperPath() + DBDToBeanUtils.packageToPath(definition.getMapperXmlLocation()));
         boolean mkdir = file.mkdir();
-        createBeanName = parseMVCName(DBDToBeanContext.getDbdToMVCDefinition(), createBeanName, MAVEN_MAPPER_XML_HONE);
-        file = new File(file + "\\" + createBeanName + ".xml");
+        String createFileName = parseMVCName(definition, createBeanName, MAVEN_MAPPER_XML_HONE);
+        file = new File(file + "\\" + createFileName + ".xml");
         FileWriter fw = new FileWriter(file);
         fw.write(createXmlStart());
         fw.flush();
@@ -74,30 +76,29 @@ public class DBDToMapper extends AbstractDBDToMVC {
      * @return 内容
      */
     public String createXmlBeansCURD() {
-        String beanName = DBDToBeanUtils.firstCharToUpperCase(DBDToBeanContext.getDbdToBeanDefinition().getCreateBeanName());
-        return "<select id=\"query" + beanName + "ById\" " +
+        return "<select id=\"query" + entityName + "ById\" " +
                 " parameterType=\"string\"" +
                 " resultType=\"" +
-                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + beanName + "\">" +
+                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + entityName + "\">" +
                 "\n\t\t\n" +
                 "\t</select>\n\n" + "\t" +
 
-                "<select id=\"query" + beanName + "s\"" +
+                "<select id=\"query" + entityName + "List\"" +
                 " resultType=\"" +
-                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + beanName + "\">" +
+                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + entityName + "\">" +
                 "\n\t\t\n" + "\t</select>\n\n" + "\t" +
 
-                "<insert id=\"insert" + beanName + "\"" +
+                "<insert id=\"insert" + entityName + "\"" +
                 " parameterType=\"" +
-                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + beanName + "\">" +
+                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + entityName + "\">" +
                 "\n\t\t\n" + "\t</insert>\n\n" + "\t" +
 
-                "<update id=\"update" + beanName + "\"" +
+                "<update id=\"update" + entityName + "\"" +
                 " parameterType=\"" +
-                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + beanName + "\">" +
+                DBDToBeanContext.getDbdToMVCDefinition().getEntityLocation() + "." + entityName + "\">" +
                 "\n\t\t\n" + "\t</update>\n\n" + "\t" +
 
-                "<delete id=\"delete" + beanName + "ById\"" +
+                "<delete id=\"delete" + entityName + "ById\"" +
                 " parameterType=\"string\">" +
                 "\n\t\t\n" + "\t</delete>";
     }

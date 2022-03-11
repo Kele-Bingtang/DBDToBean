@@ -2,7 +2,7 @@ package cn.kbt.dbdtobean.core;
 
 
 import cn.kbt.dbdtobean.config.DBDToBeanProperties;
-import cn.kbt.dbdtobean.log.LogInfo;
+import cn.kbt.dbdtobean.log.DBDToBeanLog;
 import cn.kbt.dbdtobean.mvcbean.AbstractDBDToMVC;
 import cn.kbt.dbdtobean.mvcbean.DBDToMVC;
 import cn.kbt.dbdtobean.mvcbean.DBDToMVCDefinition;
@@ -382,11 +382,11 @@ public class DBDToBean extends DBDToBeanCore {
         DBDToBeanContext.getDbdToMVCDefinition().setMapperInterSuf(mapperSuf);
     }
 
-    public void setMapperImplPre(String mapperPre) {
+    public void setMapperXmlPre(String mapperPre) {
         DBDToBeanContext.getDbdToMVCDefinition().setMapperXmlPre(mapperPre);
     }
 
-    public void setMapperImplSuf(String mapperSuf) {
+    public void setMapperXmlSuf(String mapperSuf) {
         DBDToBeanContext.getDbdToMVCDefinition().setMapperXmlSuf(mapperSuf);
     }
 
@@ -418,8 +418,8 @@ public class DBDToBean extends DBDToBeanCore {
         DBDToBeanContext.getDbdToMVCDefinition().setMavenOrSimple(mavenOrSimple);
     }
 
-    public LogInfo getLogInfo() {
-        return new LogInfo();
+    public DBDToBeanLog getLogInfo() {
+        return new DBDToBeanLog();
     }
 
     public void explain(ResultSet rs) throws SQLException {

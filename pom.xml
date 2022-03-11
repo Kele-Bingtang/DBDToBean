@@ -6,7 +6,7 @@
 
     <groupId>cn.youngkbt</groupId>
     <artifactId>dbdtobean</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
     <name>dbdtobean</name>
     <description>Read the table fields of the database and generate entity class files and curd class files of controller, service, Dao and mapper layers</description>
     <url>https://github.com/Kele-Bingtang/DBDToBean</url>
